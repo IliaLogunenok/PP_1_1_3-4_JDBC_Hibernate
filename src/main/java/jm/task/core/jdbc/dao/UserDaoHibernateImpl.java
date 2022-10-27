@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 
 import jm.task.core.jdbc.model.User;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,18 +62,12 @@ public class UserDaoHibernateImpl implements UserDao {
             e.printStackTrace();
         }
     }
-
+    @Transactional
     @Override
     public void removeUserById(long id) {
-        Transaction transaction = null;
         try (Session session = getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
             session.remove(session.get(User.class, id));
-            transaction.commit();
         } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
             e.printStackTrace();
         }
     }
